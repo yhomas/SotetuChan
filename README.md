@@ -1,0 +1,2 @@
+# SotetuChan
+LINE BOT "SotetsuChan"

@@ -72,18 +72,34 @@ function noticeEvent(){
   var pushToken = PropertiesService.getScriptProperties().getProperty("ROOMID1");
   // ユーザーのメッセージを取得
   
-  // カレンダー情報の取得
-  var calenderID=PropertiesService.getScriptProperties().getProperty("calenderID1");
-  var myCals=CalendarApp.getCalendarById(calenderID); //特定のIDのカレンダーを取得
-  var myEvents=myCals.getEventsForDay(new Date());　//カレンダーの本日のイベントを取得
- 
-  var userMessage = "今日("+Utilities.formatDate(new Date(), 'JST', 'yyyy/MM/dd')+")の旦那の予定は以下デッツ↓\n";
+  // 1人目のカレンダー情報の取得
+  var calenderID1=PropertiesService.getScriptProperties().getProperty("calenderID1");
+  var myCals1=CalendarApp.getCalendarById(calenderID1); //特定のIDのカレンダーを取得
+  var myEvents1=myCals1.getEventsForDay(new Date());　//カレンダーの本日のイベントを取得
+  
+  // 2人目のカレンダー情報の取得
+  var calenderID2=PropertiesService.getScriptProperties().getProperty("calenderID2");
+  var myCals2=CalendarApp.getCalendarById(calenderID2); //特定のIDのカレンダーを取得
+  var myEvents2=myCals2.getEventsForDay(new Date());　//カレンダーの本日のイベントを取得
 
-  for(var i=0;i<myEvents.length;i++){
-    var strTitle=myEvents[i].getTitle(); //イベントのタイトル
-    userMessage=userMessage + strTitle + '\n'; //チャットワークに送る文字列にイベント内容を追加
+ //1人目の予定メッセージの作成
+  var userMessage1 = "今日("+Utilities.formatDate(new Date(), 'JST', 'yyyy/MM/dd')+")の旦那の予定は以下デッツ↓\n";
+
+  for(var i=0;i<myEvents1.length;i++){
+    var strTitle=myEvents1[i].getTitle(); //イベントのタイトル
+    userMessage1=userMessage1 + strTitle + '\n'; //チャットワークに送る文字列にイベント内容を追加
   }
-  if(myEvents.length==0) userMessage=userMessage + 'なし';
+  if(myEvents1.length==0) userMessage1=userMessage1 + 'なし';
+
+ //2人目の予定メッセージの作成  
+  var userMessage2 = "今日("+Utilities.formatDate(new Date(), 'JST', 'yyyy/MM/dd')+")の奥の予定は以下デッツ↓\n";
+
+  for(var i=0;i<myEvents2.length;i++){
+    var strTitle=myEvents2[i].getTitle(); //イベントのタイトル
+    userMessage2=userMessage2 + strTitle + '\n'; //チャットワークに送る文字列にイベント内容を追加
+  }
+  if(myEvents2.length==0) userMessage2=userMessage2 + 'なし';
+  
   
   // 応答メッセージ用のAPI URL
   var url = 'https://api.line.me/v2/bot/message/push';
@@ -98,7 +114,11 @@ function noticeEvent(){
       'to': pushToken,
       'messages': [{
         'type': 'text',
-        'text': userMessage,
+        'text': userMessage1,
+      },
+      {
+        'type': 'text',
+        'text': userMessage2,
       }],
     }),
   });

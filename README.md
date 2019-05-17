@@ -1,2 +1,2 @@
 # SotetuChan
-LINE BOT "SotetsuChan"
+LINE BOT "SotetsuChan" for my wife.

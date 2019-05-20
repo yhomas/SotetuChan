@@ -70,17 +70,22 @@ function needWater(){
 function noticeEvent(){
   // グループのToken  
   var pushToken = PropertiesService.getScriptProperties().getProperty("ROOMID1");
+  var date= new Date();
+  
+  //翌日を取得
+  date.setDate(date.getDate() + 1);
+
   // ユーザーのメッセージを取得
   
   // 1人目のカレンダー情報の取得
   var calenderID1=PropertiesService.getScriptProperties().getProperty("calenderID1");
   var myCals1=CalendarApp.getCalendarById(calenderID1); //特定のIDのカレンダーを取得
-  var myEvents1=myCals1.getEventsForDay(new Date());　//カレンダーの本日のイベントを取得
+  var myEvents1=myCals1.getEventsForDay(date);　//カレンダーの本日のイベントを取得
   
   // 2人目のカレンダー情報の取得
   var calenderID2=PropertiesService.getScriptProperties().getProperty("calenderID2");
   var myCals2=CalendarApp.getCalendarById(calenderID2); //特定のIDのカレンダーを取得
-  var myEvents2=myCals2.getEventsForDay(new Date());　//カレンダーの本日のイベントを取得
+  var myEvents2=myCals2.getEventsForDay(date);　//カレンダーの本日のイベントを取得
   
   //1人目の予定メッセージの作成
   var userMessage1 = "今日("+Utilities.formatDate(new Date(), 'JST', 'yyyy/MM/dd')+")の旦那の予定は以下デッツ↓\n";

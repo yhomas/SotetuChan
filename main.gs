@@ -132,7 +132,7 @@ function noticeEvent(){
 
 function trainDelay(){
   //鉄道の遅延情報を取得
-  var URL="https://rti-giken.jp/fhc/api/train_tetsudo/delay.json";
+  var URL="https://tetsudo.rti-giken.jp/free/delay.json";
   var response = UrlFetchApp.fetch(URL);
   var json=JSON.parse(response.getContentText());
   

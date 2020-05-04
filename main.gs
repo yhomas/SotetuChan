@@ -140,13 +140,17 @@ function trainDelay(){
   var response = UrlFetchApp.fetch(URL);
   var json=JSON.parse(response.getContentText());
   var previousDelay = properties.getProperty("previousDelay");
-  Logger.log(previousDelay);
+  var previousUpdate = properties.getProperty("previousUpdate");
+
+  Logger.log(String(json.filter(function(x){return x.name=="千代田線"})[0].lastupdate_gmt));
   
   if(json.filter(function(x){return x.name=="千代田線"}).length > 0){//遅延情報が存在する場合
-    if(previousDelay == null || previousDelay == "0"){
+    if(!(previousDelay == "1" && previousUpdate == String(json.filter(function(x){return x.name=="千代田線"})[0].lastupdate_gmt))){
     
     properties.setProperty("previousDelay", "1");
-    var userMessage = "千代田線に遅延/運休情報があるデッツ！→https://www.tokyometro.jp/unkou/history/chiyoda.html";
+    properties.setProperty("previousUpdate", String(json.filter(function(x){return x.name=="千代田線"})[0].lastupdate_gmt));
+
+    var userMessage = "千代田線に新たな遅延/運休情報があるデッツ！→https://www.tokyometro.jp/unkou/history/chiyoda.html";
     
     // グループのToken  
     var pushToken = PropertiesService.getScriptProperties().getProperty("ROOMID1");
@@ -175,7 +179,7 @@ function trainDelay(){
       
       properties.setProperty("previousDelay", "0");
       
-      var userMessage = "千代田線が遅延が回復したデッツ。";
+      var userMessage = "千代田線の遅延/運休が遅延が回復したデッツ。";
     
     // グループのToken  
     var pushToken = PropertiesService.getScriptProperties().getProperty("ROOMID1");

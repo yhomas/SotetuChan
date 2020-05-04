@@ -105,6 +105,8 @@ function noticeEvent(){
   }
   if(myEvents2.length==0) userMessage2=userMessage2 + 'なし';
   
+ 
+  if(myEvents1.length >0 || myEvents2.length > 0){
   
   // 応答メッセージ用のAPI URL
   var url = 'https://api.line.me/v2/bot/message/push';
@@ -128,16 +130,23 @@ function noticeEvent(){
     }),
   });
   return ContentService.createTextOutput(JSON.stringify({'content': 'post ok'})).setMimeType(ContentService.MimeType.JSON);
+  }
 }
 
 function trainDelay(){
   //鉄道の遅延情報を取得
+  var properties = PropertiesService.getScriptProperties();
   var URL="https://tetsudo.rti-giken.jp/free/delay.json";
   var response = UrlFetchApp.fetch(URL);
   var json=JSON.parse(response.getContentText());
+  var previousDelay = properties.getProperty("previousDelay");
+  Logger.log(previousDelay);
   
-  if(json.filter(function(x){return x.name=="千代田線"}).length > 0){
-    var userMessage = "千代田線が遅延してるデッツ！";
+  if(json.filter(function(x){return x.name=="千代田線"}).length > 0){//遅延情報が存在する場合
+    if(previousDelay == null || previousDelay == "0"){
+    
+    properties.setProperty("previousDelay", "1");
+    var userMessage = "千代田線に遅延/運休情報があるデッツ！→https://www.tokyometro.jp/unkou/history/chiyoda.html";
     
     // グループのToken  
     var pushToken = PropertiesService.getScriptProperties().getProperty("ROOMID1");
@@ -160,6 +169,38 @@ function trainDelay(){
       }),
     });
     return ContentService.createTextOutput(JSON.stringify({'content': 'post ok'})).setMimeType(ContentService.MimeType.JSON);
+    }
+  }else{ //遅延情報が存在しない場合
+    if(previousDelay == "1"){
+      
+      properties.setProperty("previousDelay", "0");
+      
+      var userMessage = "千代田線が遅延が回復したデッツ。";
+    
+    // グループのToken  
+    var pushToken = PropertiesService.getScriptProperties().getProperty("ROOMID1");
+    
+    // 応答メッセージ用のAPI URL
+    var url = 'https://api.line.me/v2/bot/message/push';
+    
+    UrlFetchApp.fetch(url, {
+      'headers': {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ' + ACCESS_TOKEN,
+      },
+      'method': 'post',
+      'payload': JSON.stringify({
+        'to': pushToken,
+        'messages': [{
+          'type': 'text',
+          'text': userMessage,
+        }],
+      }),
+    });
+    return ContentService.createTextOutput(JSON.stringify({'content': 'post ok'})).setMimeType(ContentService.MimeType.JSON);
+      
+    }
+
   }
   
 }

@@ -179,7 +179,7 @@ function trainDelay(){
       
       properties.setProperty("previousDelay", "0");
       
-      var userMessage = "千代田線の遅延/運休が遅延が回復したデッツ。";
+      var userMessage = "千代田線の遅延/運休が回復したデッツ。";
     
     // グループのToken  
     var pushToken = PropertiesService.getScriptProperties().getProperty("ROOMID1");
